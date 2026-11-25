@@ -1,10 +1,13 @@
+
 <!doctype html>
 <html lang="vi">
 <head>
   <meta charset="utf-8">
   <meta name="viewport"
         content="width=device-width, initial-scale=1">
+
   <title>Cổng tài liệu đại biểu</title>
+
   <style>
     body {
       margin: 0;
@@ -12,68 +15,165 @@
       color: #17212b;
       font-family: system-ui, sans-serif;
     }
-    main { max-width: 1000px; margin: 32px auto; padding: 0 16px; }
-    h1 { color: #17324d; }
-    a { color:#176b55; }
+
+    main {
+      max-width: 1000px;
+      margin: 32px auto;
+      padding: 0 16px;
+    }
+
+    h1 {
+      color: #17324d;
+    }
+
+    a {
+      color: #176b55;
+    }
+
     .layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
-    .panel { min-width: 0; padding: 20px; background: #ffffff; }
+
+    .panel {
+      min-width: 0;
+      padding: 20px;
+      background: #ffffff;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+    }
+
+    #tong-so-luot {
+      font-weight: bold;
+      color: #0c6380;
+    }
+
     @media (max-width: 600px) {
-      .layout { grid-template-columns: 1fr; }
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-container {
+        height: 260px;
+      }
     }
   </style>
 </head>
+
 <body>
   <main>
-    <h1>Tài liệu hội nghị mô phỏng</h1>
-    <p>Hội nghị bắt đầu lúc <strong>09:00</strong>.</p>
+    <h1>Cổng tài liệu đại biểu</h1>
+
+    <p>
+      Hội nghị bắt đầu lúc <strong>09:00</strong>.
+    </p>
+
     <div class="layout">
+
       <section class="panel">
         <h2>Tài liệu đại biểu</h2>
+
         <p>Đọc sổ tay trước khi tham dự.</p>
-        <a href="files/handbook-v1.0.pdf">
-          Mở sổ tay đại biểu – bản 1.0
+
+        <a href="../handbook-v1.1.pdf">
+          Mở sổ tay đại biểu – bản 1.1
         </a>
       </section>
+
       <section class="panel">
         <h2>Lượt đăng ký mới theo tháng</h2>
-        <p>Số liệu minh họa. Đơn vị tính là lượt đăng ký.</p>
-        <canvas id="bieu-do" role="img"
-                aria-label="Lượt đăng ký mới theo tháng"></canvas>
+
+        <p>
+          Số liệu minh họa. Đơn vị tính là lượt đăng ký.
+        </p>
+
+        <p id="tong-so-luot"></p>
+
+        <div class="chart-container">
+          <canvas id="bieu-do"
+                  role="img"
+                  aria-label="Lượt đăng ký mới theo tháng">
+          </canvas>
+        </div>
       </section>
+
     </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
   <script>
     const soLieu = [
       { thang: "Tháng 7", giaTri: 24 },
       { thang: "Tháng 8", giaTri: 37 },
       { thang: "Tháng 9", giaTri: 42 },
       { thang: "Tháng 10", giaTri: 51 },
-      { thang: "Tháng 11", giaTri: 46 },
-      { thang: "Tổng số lượng", giaTri: 200}
+      { thang: "Tháng 11", giaTri: 46 }
     ];
 
-    const loaiBieuDo = "doughnut";
-    const mauChinh = "#0c6380";
-    const bangMau = [mauChinh, "#9b4d28", "#39724a", "#6c54a3"];
+    // Tự động tính tổng số lượt đăng ký
+    const tongSoLuot = soLieu.reduce(
+      (tong, muc) => tong + muc.giaTri,
+      0
+    );
 
+    document.getElementById("tong-so-luot").textContent =
+      "Tổng số lượt đăng ký: " + tongSoLuot + " lượt";
+
+    // Thiết lập màu sắc biểu đồ
+    const mauChinh = "#0c6380";
+
+    // Vẽ biểu đồ đường
     new Chart(document.getElementById("bieu-do"), {
-      type: loaiBieuDo,
+      type: "line",
+
       data: {
         labels: soLieu.map(muc => muc.thang),
+
         datasets: [{
           label: "Lượt đăng ký mới",
           data: soLieu.map(muc => muc.giaTri),
-          backgroundColor: loaiBieuDo === "line"
-            ? bangMau
-            : mauChinh,
-          borderColor: mauChinh
+          borderColor: mauChinh,
+          backgroundColor: "#9bcbd8",
+          pointBackgroundColor: mauChinh,
+          pointRadius: 5,
+          borderWidth: 3,
+          tension: 0.3,
+          fill: false
         }]
+      },
+
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+          legend: {
+            display: true
+          }
+        },
+
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "Số lượt đăng ký"
+            }
+          },
+
+          x: {
+            title: {
+              display: true,
+              text: "Tháng"
+            }
+          }
+        }
       }
     });
   </script>
