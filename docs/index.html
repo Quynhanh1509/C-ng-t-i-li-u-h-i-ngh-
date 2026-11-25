@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="vi">
 <head>
@@ -5,49 +6,90 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1">
   <title>Cổng tài liệu đại biểu</title>
+
   <style>
     body {
       margin: 0;
       background: #eef4f8;
       color: #17212b;
-      font-family: system-ui, sans-serif;
+      font-family: Arial, sans-serif;
     }
-    main { max-width: 1000px; margin: 32px auto; padding: 0 16px; }
-    h1 { color: #17324d; }
-    a { color:#176b55; }
+
+    main {
+      max-width: 1000px;
+      margin: 32px auto;
+      padding: 0 16px;
+    }
+
+    h1 {
+      color: #17324d;
+    }
+
+    a {
+      color: #176b55;
+    }
+
     .layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
     }
-    .panel { min-width: 0; padding: 20px; background: #ffffff; }
+
+    .panel {
+      min-width: 0;
+      padding: 20px;
+      background: #ffffff;
+    }
+
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 320px;
+    }
+
     @media (max-width: 600px) {
-      .layout { grid-template-columns: 1fr; }
+      .layout {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
   <main>
-    <h1>Tài liệu hội nghị mô phỏng</h1>
+    <h1>Cổng tài liệu đại biểu</h1>
+
     <p>Hội nghị bắt đầu lúc <strong>09:00</strong>.</p>
+
     <div class="layout">
+
       <section class="panel">
         <h2>Tài liệu đại biểu</h2>
         <p>Đọc sổ tay trước khi tham dự.</p>
+
         <a href="files/handbook-v1.0.pdf">
           Mở sổ tay đại biểu – bản 1.0
         </a>
       </section>
+
       <section class="panel">
         <h2>Lượt đăng ký mới theo tháng</h2>
+
         <p>Số liệu minh họa. Đơn vị tính là lượt đăng ký.</p>
-        <canvas id="bieu-do" role="img"
-                aria-label="Lượt đăng ký mới theo tháng"></canvas>
+
+        <div class="chart-container">
+          <canvas id="bieu-do"
+                  role="img"
+                  aria-label="Biểu đồ đường thể hiện lượt đăng ký mới từ tháng 7 đến tháng 11">
+          </canvas>
+        </div>
       </section>
+
     </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
   <script>
     const soLieu = [
       { thang: "Tháng 7", giaTri: 24 },
@@ -57,24 +99,69 @@
       { thang: "Tháng 11", giaTri: 46 }
     ];
 
-    const loaiBieuDo = "doughnut";
-    const mauChinh = "#0c6380";
-    const bangMau = [mauChinh, "#9b4d28", "#39724a", "#6c54a3"];
+    // Tính tổng số lượt đăng ký
+    const tongSoLuong = soLieu.reduce(
+      (tong, muc) => tong + muc.giaTri, 0
+    );
+
+    const loaiBieuDo = "line";
+    const mauChinh = "#176b55";
 
     new Chart(document.getElementById("bieu-do"), {
       type: loaiBieuDo,
+
       data: {
         labels: soLieu.map(muc => muc.thang),
+
         datasets: [{
-          label: "Lượt đăng ký mới",
+          label: "Lượt đăng ký mới (lượt)",
           data: soLieu.map(muc => muc.giaTri),
-          backgroundColor: loaiBieuDo === "line"
-            ? bangMau
-            : mauChinh,
-          borderColor: mauChinh
+
+          borderColor: mauChinh,
+          backgroundColor: "rgba(23, 107, 85, 0.15)",
+
+          borderWidth: 3,
+          pointRadius: 5,
+          pointBackgroundColor: mauChinh,
+          fill: true,
+          tension: 0.3
         }]
+      },
+
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "Số lượt đăng ký (lượt)"
+            }
+          },
+
+          x: {
+            title: {
+              display: true,
+              text: "Tháng"
+            }
+          }
+        },
+
+        plugins: {
+          title: {
+            display: true,
+            text: "Tổng số lượt đăng ký: " + tongSoLuong
+          },
+
+          legend: {
+            display: true
+          }
+        }
       }
     });
   </script>
+
 </body>
 </html>
