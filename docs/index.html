@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport"
         content="width=device-width, initial-scale=1">
+
   <title>Cổng tài liệu đại biểu</title>
 
   <style>
@@ -57,6 +58,7 @@
 
 <body>
   <main>
+
     <h1>Cổng tài liệu đại biểu</h1>
 
     <p>
@@ -73,6 +75,7 @@
       <!-- Tài liệu đại biểu -->
       <section class="panel">
         <h2>Tài liệu đại biểu</h2>
+
         <p>Đọc sổ tay trước khi tham dự.</p>
 
         <a href="files/handbook-v1.0.pdf">
@@ -84,7 +87,9 @@
       <section class="panel">
         <h2>Lượt đăng ký mới theo tháng</h2>
 
-        <p>Số liệu minh họa. Đơn vị tính là lượt đăng ký.</p>
+        <p>
+          Số liệu minh họa. Đơn vị tính là lượt đăng ký.
+        </p>
 
         <div class="chart-container">
           <canvas id="bieu-do"
@@ -118,9 +123,12 @@
     </div>
   </main>
 
+  <!-- Thư viện Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 
   <script>
+
+    // Dữ liệu lượt đăng ký mới theo tháng
     const soLieu = [
       { thang: "Tháng 7", giaTri: 24 },
       { thang: "Tháng 8", giaTri: 37 },
@@ -137,7 +145,9 @@
     const loaiBieuDo = "line";
     const mauChinh = "#176b55";
 
+    // Khởi tạo biểu đồ
     new Chart(document.getElementById("bieu-do"), {
+
       type: loaiBieuDo,
 
       data: {
@@ -145,6 +155,7 @@
 
         datasets: [{
           label: "Lượt đăng ký mới (lượt)",
+
           data: soLieu.map(muc => muc.giaTri),
 
           borderColor: mauChinh,
@@ -153,6 +164,7 @@
           borderWidth: 3,
           pointRadius: 5,
           pointBackgroundColor: mauChinh,
+
           fill: true,
           tension: 0.3
         }]
@@ -165,6 +177,7 @@
         scales: {
           y: {
             beginAtZero: true,
+
             title: {
               display: true,
               text: "Số lượt đăng ký (lượt)"
@@ -191,6 +204,7 @@
         }
       }
     });
+
   </script>
 
 </body>
